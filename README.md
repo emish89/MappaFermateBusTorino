@@ -1,2 +1,5 @@
 # MappaFermateBusTorino
-Mappa delle fermate del bus GTT di Torino
+GTT Bus Stops Map - Torino Italy
+
+This repository will provide a map of the Torino bus stops and the next busses coming. 
+
