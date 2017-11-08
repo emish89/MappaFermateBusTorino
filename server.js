@@ -2,6 +2,8 @@
 var express = require('express');
 var http = require('http');
 var session = require('express-session');
+var cors = require('cors')
+
 
 var app = express();
 app.use(session({
@@ -9,6 +11,8 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+app.use(cors());
+
 
 var fs = require("fs");
 
