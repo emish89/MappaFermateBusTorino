@@ -1,77 +1,87 @@
+/** Inizializzazione */
 var express = require('express');
 var http = require('http');
 var session = require('express-session');
 
 var app = express();
 app.use(session({
-    secret: '2C44-4D44-WppQ38S',
+    secret: 'topsecret',
     resave: true,
     saveUninitialized: true
 }));
 
 var fs = require("fs");
 
-// Authentication and Authorization Middleware
-var auth = function(req, res, next) {
-    if (req.session && req.session.user === "fede" && req.session.admin)
-      return next();
+/** Autenticazione e autorizzazione */
+var auth = function (req, res, next) {
+    if (req.session && req.session.logged)
+        return next();
     else
-      return res.sendStatus(401);
-  };
+        return res.sendStatus(401);
+};
 
-// Login endpoint
+/** Login */
 app.get('/login', function (req, res) {
     if (!req.query.username || !req.query.password) {
-      res.send('login failed');    
-    } else if(req.query.username === "fede" || req.query.password === "balla") {
-      req.session.user = "fede";
-      req.session.admin = true;
-      res.send("login success!");
+        res.send('login failed');
+    } else if (req.query.username === "fede" || req.query.password === "balla") {
+        req.session.user = "fede";
+        req.session.logged = true;
+        res.send("Login success!");
     }
-  });
-  
-// Logout endpoint
+});
+
+/** Logout */ 
 app.get('/logout', function (req, res) {
     req.session.destroy();
-    res.send("logout success!");
-  });
-   
-  // Get content endpoint
-  app.get('/content', auth, function (req, res) {
-      res.send("You can only see this after you've logged in.");
-  });  
+    res.send("Logout success!");
+});
 
-//lista fermata
+/** Pagina test
+app.get('/content', auth, function (req, res) {
+    res.send("You can only see this after you've logged in.");
+});
+*/
+
+/** restituisce la lista fermate */
 app.get('/listStops', function (req, res) {
-   fs.readFile( __dirname + "/" + "fermate.json", 'utf8', function (err, data) {    
-        console.log( data );
-        res.end( data );
-   });
+    if (req.session && req.session.logged) {
+        fs.readFile(__dirname + "/" + "fermate.json", 'utf8', function (err, data) {
+            console.log(data);
+            res.end(data);
+        });
+    } else {
+        return res.sendStatus(401);
+    }
 })
 
-//passaggi per una fermata di un determinato id
+/** Passaggi dei bus dato un ID */
 app.get('/id/:id', function (req, res) {
-    let url= "http://gpa.madbob.org/query.php?stop="+req.params.id;
-    
-    http.get(url, function(resapi){
-        let body = '';
-    
-        resapi.on('data', function(chunk){
-            body += chunk;
-        });
-    
-        resapi.on('end', function(){
-            console.log(body);
-            res.end(body);
-        });
-    }).on('error', function(e){
-          console.log("Error: ", e);
-          res.end("Error: "+e);
-    });
+    if (req.session && req.session.logged) {
+        let url = "http://gpa.madbob.org/query.php?stop=" + req.params.id;
 
- })
- 
- /*app.get('/login', function(req, res) {
+        http.get(url, function (resapi) {
+            let body = '';
+
+            resapi.on('data', function (chunk) {
+                body += chunk;
+            });
+
+            resapi.on('end', function () {
+                console.log(body);
+                res.end(body);
+            });
+        }).on('error', function (e) {
+            console.log("Error: ", e);
+            res.end("Error: " + e);
+        });
+    } else {
+        return res.sendStatus(401);
+    }
+
+})
+
+/*app.get('/login', function(req, res) {
     var data = {
         "login params": {
             "user": req.query.user,
@@ -83,12 +93,12 @@ app.get('/id/:id', function (req, res) {
     res.end(JSON.stringify(data));
 });*/
 
-//server run
+/** Start del server */
 var server = app.listen(8081, function () {
 
-  var host = server.address().address
-  var port = server.address().port
+    var host = server.address().address
+    var port = server.address().port
 
-  console.log("App is listening at http://%s:%s", host, port)
+    console.log("App is listening at http://%s:%s", host, port)
 
 })

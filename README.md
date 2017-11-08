@@ -27,3 +27,15 @@ node
   ({{bbox}});
 out;
 ```
+
+
+Istruzioni:
+
+- installare npm 
+- installare tutti i moduli node del progetto (express, express-session)
+- start del server dalla cartella di progetto: npm server.js
+- login di prova (user:fede - pass:balla) - http://127.0.0.1:8081/login?username=fede&password=balla
+- da lì in poi è possibile utilizzare le chiamate: 
+    - listStops che restituisce l'elenco di tutte le fermate
+    - id/N dove N è l'id della fermata che restituisce i passaggi
+    - logout per terminare la sessione
