@@ -4,10 +4,18 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Using closures in event listeners</title>
+    <title>Mappa</title>
     <style>
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
+
+        .top {
+            position: absolute;
+            height: 3%;
+            z-index: 3000;
+            margin-left: 9em;
+            margin-top: 1em;
+        }
 
         #map {
             height: 100%;
@@ -24,9 +32,12 @@
 </head>
 
 <body>
+    <div class="top">
+        <button onclick="window.location.href='/logout'">Logout</button>
+    </div>
     <div id="map"></div>
     <script>
-        httpGetAsync("http://localhost:8081/listStops", getListStops);
+        httpGetAsync("/listStops", getListStops);
 
         var jsonlist;
         var prev_infowindow = false;
@@ -125,17 +136,18 @@
 
                 prev_infowindow = infowindow;
                 infowindow.open(marker.get('map'), marker);
-                httpGetAsync("http://localhost:8081/id/" + obj.properties.ref, function (data) {
+                httpGetAsync("/id/" + obj.properties.ref, function (data) {
                     let json = JSON.parse(data);
                     //console.log(json);
                     let text = "";
                     for (let i = 0; i < json.length; i++) {
                         let obj = json[i];
                         let rt = "";
-                        if(obj.realtime.trim().toString() === 'false'){
+                        if (obj.realtime.trim().toString() === 'false') {
                             rt = "(non RealTime)";
                         }
-                        text += "<b>Linea: <u>" + obj.line + "</u></b> - " + obj.hour + "&nbsp;&nbsp;&nbsp;&nbsp;" + rt;
+                        text += "<b>Linea: <u>" + obj.line + "</u></b> - " + obj.hour +
+                            "&nbsp;&nbsp;&nbsp;&nbsp;" + rt;
                         text += "<br>";
                     }
                     text = infowindow.getContent() + "<br>" + text;

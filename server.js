@@ -1,3 +1,11 @@
+/**
+ * manca:
+ * -logica del login fallito
+ * -logica logout
+ * -framework js?
+ */
+ 
+
 /** Inizializzazione */
 var express = require('express');
 var http = require('http');
@@ -27,25 +35,47 @@ var auth = function (req, res, next) {
 /** Login */
 app.get('/login', function (req, res) {
     if (!req.query.username || !req.query.password) {
-        res.send('login failed');
-    } else if (req.query.username === "fede" || req.query.password === "balla") {
+        res.send('missing parameters');
+    } else if (req.query.username === "fede" && req.query.password === "balla") {
         req.session.user = "fede";
         req.session.logged = true;
-        res.send("Login success!");
+        req.session.save(function (err) {
+            // session saved
+            res.redirect("/content");
+        })
+        //res.send("Login success!");
+
+    } else {
+        res.send('login failed');
     }
 });
 
-/** Logout */ 
+/** Logout */
 app.get('/logout', function (req, res) {
     req.session.destroy();
     res.send("Logout success!");
 });
 
-/** Pagina test
+/** Pagina contenuto mappa */
 app.get('/content', auth, function (req, res) {
-    res.send("You can only see this after you've logged in.");
+    res.sendfile('maps.html', {
+        root: __dirname
+    });
+    //res.send("You can only see this after you've logged in.");
 });
-*/
+
+/** Pagina di default */
+app.get('/', function (req, res) {
+    //se sono loggato vado su content
+    //else vado su login
+    if (req.session && req.session.logged)
+        res.redirect("/content");
+    else
+        res.sendfile('login.html', {
+            root: __dirname
+        });
+})
+
 
 /** restituisce la lista fermate */
 app.get('/listStops', function (req, res) {
@@ -85,17 +115,6 @@ app.get('/id/:id', function (req, res) {
 
 })
 
-/*app.get('/login', function(req, res) {
-    var data = {
-        "login params": {
-            "user": req.query.user,
-            "pass": req.query.pass
-        }
-    }; 
-
-    console.log(data);
-    res.end(JSON.stringify(data));
-});*/
 
 /** Start del server */
 var server = app.listen(8081, function () {
