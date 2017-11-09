@@ -20,6 +20,7 @@ app.use(session({
     saveUninitialized: true
 }));
 app.use(cors());
+app.set('view engine', 'ejs')
 
 
 var fs = require("fs");
@@ -35,45 +36,47 @@ var auth = function (req, res, next) {
 /** Login */
 app.get('/login', function (req, res) {
     if (!req.query.username || !req.query.password) {
-        res.send('missing parameters');
+        res.render('login',{message: "Missing parameters"});
     } else if (req.query.username === "fede" && req.query.password === "balla") {
         req.session.user = "fede";
         req.session.logged = true;
         req.session.save(function (err) {
             // session saved
-            res.redirect("/content");
+            res.render('maps');
         })
         //res.send("Login success!");
 
     } else {
-        res.send('login failed');
+        res.render('login',{message: "Login Failed"});
     }
 });
 
 /** Logout */
 app.get('/logout', function (req, res) {
     req.session.destroy();
-    res.send("Logout success!");
+    res.render('login',{message: "Logged out"});
 });
 
-/** Pagina contenuto mappa */
+/** Pagina contenuto mappa 
 app.get('/content', auth, function (req, res) {
-    res.sendfile('maps.html', {
-        root: __dirname
-    });
+    res.render('maps');    
+    //res.sendfile('maps.html', {
+      //  root: __dirname
+    //});
     //res.send("You can only see this after you've logged in.");
-});
+});*/
 
 /** Pagina di default */
 app.get('/', function (req, res) {
     //se sono loggato vado su content
     //else vado su login
     if (req.session && req.session.logged)
-        res.redirect("/content");
+        res.render('maps');
     else
-        res.sendfile('login.html', {
-            root: __dirname
-        });
+        res.render('login',{message: null});
+    //res.sendfile('login.html', {
+      //      root: __dirname
+        //});
 })
 
 
