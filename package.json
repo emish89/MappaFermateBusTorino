@@ -1,0 +1,35 @@
+{
+  "name": "torinobus",
+  "version": "1.0.0",
+  "description": "bus stops and timetable realtime torino",
+  "main": "server.js",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "serve-favicon": "^2.4.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node server.js",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/emish89/MappaFermateBusTorino.git"
+  },
+  "keywords": [
+    "bus",
+    "stops",
+    "timetable",
+    "realtime",
+    "torino"
+  ],
+  "author": "federicoballarini",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/emish89/MappaFermateBusTorino/issues"
+  },
+  "homepage": "https://github.com/emish89/MappaFermateBusTorino#readme"
+}

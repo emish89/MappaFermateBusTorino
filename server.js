@@ -1,17 +1,9 @@
-/**
- * manca:
- * -logica del login fallito
- * -logica logout
- * -framework js?
- */
- 
-
 /** Inizializzazione */
 var express = require('express');
 var http = require('http');
 var session = require('express-session');
 var cors = require('cors')
-
+var favicon = require('serve-favicon');
 
 var app = express();
 app.use(session({
@@ -19,8 +11,11 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
+//per le risposte cross domain
 app.use(cors());
-app.set('view engine', 'ejs')
+//come motore js per frontend
+app.set('view engine', 'ejs');
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 
 
 var fs = require("fs");
@@ -57,26 +52,14 @@ app.get('/logout', function (req, res) {
     res.render('login',{message: "Logged out"});
 });
 
-/** Pagina contenuto mappa 
-app.get('/content', auth, function (req, res) {
-    res.render('maps');    
-    //res.sendfile('maps.html', {
-      //  root: __dirname
-    //});
-    //res.send("You can only see this after you've logged in.");
-});*/
-
 /** Pagina di default */
 app.get('/', function (req, res) {
     //se sono loggato vado su content
-    //else vado su login
     if (req.session && req.session.logged)
         res.render('maps');
+    //else vado su login    
     else
         res.render('login',{message: null});
-    //res.sendfile('login.html', {
-      //      root: __dirname
-        //});
 })
 
 
@@ -84,7 +67,7 @@ app.get('/', function (req, res) {
 app.get('/listStops', function (req, res) {
     if (req.session && req.session.logged) {
         fs.readFile(__dirname + "/" + "fermate.json", 'utf8', function (err, data) {
-            console.log(data);
+            //console.log(data);
             res.end(data);
         });
     } else {
@@ -105,7 +88,7 @@ app.get('/id/:id', function (req, res) {
             });
 
             resapi.on('end', function () {
-                console.log(body);
+                //console.log(body);
                 res.end(body);
             });
         }).on('error', function (e) {

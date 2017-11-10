@@ -4,11 +4,10 @@
 <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <title>Mappa</title>
+    <title>Mappa Fermate Torino</title>
     <style>
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
-
         .top {
             position: absolute;
             height: 3%;
@@ -16,11 +15,9 @@
             margin-left: 9em;
             margin-top: 1em;
         }
-
         #map {
             height: 100%;
         }
-        /* Optional: Makes the sample page fill the window. */
 
         html,
         body {
@@ -37,19 +34,18 @@
     </div>
     <div id="map"></div>
     <script>
+        //come prima cosa chiediamo la lista fermata
         httpGetAsync("/listStops", getListStops);
 
-        var jsonlist;
-        var prev_infowindow = false;
+        var jsonlist; //la lista fermate
+        var prev_infowindow = false; //per avere una sola infowindow aperta
 
-
+        /** Una volta arrivate le fermate parsa la lista e carica la mappa */
         function getListStops(list) {
             jsonlist = JSON.parse(list);
-            //console.log(jsonlist);
             loadMapsAPI();
-
         }
-
+        /** GET di una pagina web in modo asincrono */
         function httpGetAsync(theUrl, callback) {
             var xmlHttp = new XMLHttpRequest();
             xmlHttp.onreadystatechange = function () {
@@ -60,6 +56,7 @@
             xmlHttp.send(null);
         }
 
+        /** Inizializziamo la mappa con posizione e marker */
         function initMap() {
             var map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 15,
@@ -69,14 +66,6 @@
                 }
             });
 
-            /*
-            var bounds = {
-                north: 45.1638307,
-                south: 44.9638307,
-                east: 7.6643373,
-                west: 7.5643373
-            };*/
-
             for (let i = 0; i < jsonlist.length; i++) {
                 let obj = jsonlist[i];
                 if (obj.geometry.coordinates[0] != undefined && obj.geometry.coordinates[1] != undefined && obj.properties
@@ -85,8 +74,6 @@
                     myLatLng.lng = Number(obj.geometry.coordinates[0]);
                     myLatLng.lat = Number(obj.geometry.coordinates[1]);
 
-
-                    //console.log(obj.geometry.coordinates[0]+ ";"+obj.geometry.coordinates[1]+ " "+obj.properties.ref + " - "+ obj.properties.name);
                     var marker = new google.maps.Marker({
                         position: myLatLng,
                         map: map
@@ -94,36 +81,12 @@
 
                     attachInfoMessage(marker, obj);
 
-                    //console.log(marker)
                 }
             }
-            // Display the area between the location southWest and northEast.
-            //map.fitBounds(bounds);
-
-            // Add 5 markers to map at random locations.
-            // For each of these markers, give them a title with their index, and when
-            // they are clicked they should open an infowindow with text from a secret
-            // message.
-            /*
-            var secretMessages = ['This', 'is', 'the', 'secret', 'message'];
-            var lngSpan = bounds.east - bounds.west;
-            var latSpan = bounds.north - bounds.south;
-            for (var i = 0; i < secretMessages.length; ++i) {
-                var marker = new google.maps.Marker({
-                    position: {
-                        lat: bounds.south + latSpan * Math.random(),
-                        lng: bounds.west + lngSpan * Math.random()
-                    },
-                    map: map
-                });
-                attachSecretMessage(marker, secretMessages[i]);
-            }
-            */
-
+            
         }
 
-        // Attaches an info window to a marker with the provided message. When the
-        // marker is clicked, the info window will open with the secret message.
+        /** Ad ogni marker attacchiamo una infowindow che chiederà info sui prossimi passaggi alle API */
         function attachInfoMessage(marker, obj) {
             var infowindow = new google.maps.InfoWindow({
                 content: "<b>Fermata " + obj.properties.ref + " - " + obj.properties.name + "</b><br>" //+obj.geometry.coordinates[0]+ ";"+obj.geometry.coordinates[1]
@@ -156,7 +119,7 @@
             });
         }
 
-
+        /** Caricamento delle API maps in modo asincrono */
         function addScript(url, callback) {
             var script = document.createElement('script');
             if (callback) script.onload = callback;
@@ -165,7 +128,7 @@
             document.body.appendChild(script);
         }
 
-
+        /** Quando abbiamo valorizzato le strutture, carichiamo la mappa */
         function loadMapsAPI() {
             addScript(
                 'https://maps.googleapis.com/maps/api/js?key=AIzaSyDT2hBEMtQcyjgQi5-PmleUxnlIm3as9CA&callback=initMap'
