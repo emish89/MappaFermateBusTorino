@@ -4,6 +4,8 @@ var http = require('http');
 var session = require('express-session');
 var cors = require('cors')
 var favicon = require('serve-favicon');
+var bodyParser = require('body-parser');
+
 
 var app = express();
 app.use(session({
@@ -16,8 +18,10 @@ app.use(cors());
 //come motore js per frontend
 app.set('view engine', 'ejs');
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
-
-
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 var fs = require("fs");
 
 /** Autenticazione e autorizzazione */
@@ -29,10 +33,10 @@ var auth = function (req, res, next) {
 };
 
 /** Login */
-app.get('/login', function (req, res) {
-    if (!req.query.username || !req.query.password) {
+app.post('/login', function (req, res) {
+    if (!req.body.username || !req.body.password) {
         res.render('login',{message: "Missing parameters"});
-    } else if (req.query.username === "fede" && req.query.password === "balla") {
+    } else if (req.body.username === "fede" && req.body.password === "balla") {
         req.session.user = "fede";
         req.session.logged = true;
         req.session.save(function (err) {
