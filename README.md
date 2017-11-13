@@ -45,11 +45,13 @@ Istruzioni:
     POST:
       - login con parametri di user e pass
 
-- è possibile trovare una demo del progetto a: https://lit-stream-37674.herokuapp.com/
+- è possibile trovare una demo del progetto su Heroku: https://lit-stream-37674.herokuapp.com/
+- altra demo su Amazon AWS:
+http://ec2-52-43-114-18.us-west-2.compute.amazonaws.com:8081/
 
 
 
 Next steps:
-- creare modello per user in modo da utilizzarne i suoi metodi per il login (per prova)
 - fare in modo che la lista fermate sia caricata dinamicamente a seconda della porzione visualizzata.
-
+- cambiare framework (react?)
+- creare modello per user in modo da utilizzarne i suoi metodi per il login (per prova)
