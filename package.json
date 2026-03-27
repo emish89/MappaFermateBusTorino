@@ -4,7 +4,7 @@
   "description": "bus stops and timetable realtime torino",
   "main": "server.js",
   "dependencies": {
-    "body-parser": "^1.18.2",
+    "body-parser": "^2.0.0",
     "cors": "^2.8.4",
     "ejs": "^3.0.0",
     "express": "^4.16.2",
